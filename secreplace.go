@@ -42,6 +42,11 @@ func Find(s string, open, close string) (start, end int, ok bool, err error) {
 		return -1, -1, false, nil
 	}
 
+	return find(s, open, close)
+}
+
+// find is Find without the argument checks.
+func find(s string, open, close string) (start, end int, ok bool, err error) {
 	closeIdx := strings.Index(s, close)
 	if closeIdx == -1 {
 		openIdx := strings.Index(s, open)
@@ -85,7 +90,12 @@ func ReplaceOne(s string, open, close string, f func(string) (string, error)) (o
 		return "", false, nil
 	}
 
-	start, end, ok, err := Find(s, open, close)
+	return replaceOne(s, open, close, f)
+}
+
+// replaceOne is ReplaceOne without the argument checks.
+func replaceOne(s string, open, close string, f func(string) (string, error)) (out string, changed bool, err error) {
+	start, end, ok, err := find(s, open, close)
 	if err != nil {
 		return s, false, err
 	}
@@ -126,7 +136,7 @@ func ReplaceAll(s string, open, close string, f func(string) (string, error)) (o
 	}
 
 	for {
-		replaced, c, err := ReplaceOne(s, open, close, f)
+		replaced, c, err := replaceOne(s, open, close, f)
 		if err != nil {
 			return s, changed, err
 		}
