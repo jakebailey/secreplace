@@ -7,6 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func identity(s string) (string, error) {
+	return s, nil
+}
+
 func TestFind(t *testing.T) {
 	const (
 		open  = "(_"
@@ -86,10 +90,6 @@ func TestReplaceOne(t *testing.T) {
 		close = "_)"
 	)
 
-	identity := func(s string) (string, error) {
-		return s, nil
-	}
-
 	tests := []struct {
 		s         string
 		f         func(string) (string, error)
@@ -148,10 +148,6 @@ func TestReplaceAll(t *testing.T) {
 		open  = "(_"
 		close = "_)"
 	)
-
-	identity := func(s string) (string, error) {
-		return s, nil
-	}
 
 	tests := []struct {
 		s         string
@@ -265,4 +261,111 @@ func TestReplacePartialErr(t *testing.T) {
 	assert.Equal(t, partial, s)
 	assert.True(t, changed)
 	assert.Equal(t, errTest, err)
+}
+
+func TestEmptyTerminator(t *testing.T) {
+	const testS = "foo"
+
+	tests := []struct {
+		open  string
+		close string
+		err   error
+	}{
+		{
+			open:  "",
+			close: ")",
+			err:   ErrEmptyOpen,
+		},
+		{
+			open:  "(",
+			close: "",
+			err:   ErrEmptyClose,
+		},
+	}
+
+	t.Run("Find", func(t *testing.T) {
+		for _, test := range tests {
+			start, end, ok, err := Find(testS, test.open, test.close)
+			assert.Equal(t, -1, start)
+			assert.Equal(t, -1, end)
+			assert.False(t, ok)
+			assert.Equal(t, test.err, err)
+		}
+	})
+
+	funcs := []struct {
+		name string
+		f    func(s string, open, close string, f func(string) (string, error)) (string, bool, error)
+	}{
+		{"ReplaceOne", ReplaceOne},
+		{"ReplaceAll", ReplaceAll},
+	}
+
+	for _, tf := range funcs {
+		t.Run(tf.name, func(t *testing.T) {
+			for _, test := range tests {
+				s, changed, err := tf.f(testS, test.open, test.close, identity)
+				assert.Equal(t, testS, s)
+				assert.Equal(t, false, changed)
+				assert.Equal(t, test.err, err)
+			}
+		})
+	}
+}
+
+func TestEmptyInput(t *testing.T) {
+	const (
+		open  = "(_"
+		close = "_)"
+	)
+
+	t.Run("Find", func(t *testing.T) {
+		start, end, ok, err := Find("", open, close)
+		assert.Equal(t, -1, start)
+		assert.Equal(t, -1, end)
+		assert.False(t, ok)
+		assert.Nil(t, err)
+	})
+
+	funcs := []struct {
+		name string
+		f    func(s string, open, close string, f func(string) (string, error)) (string, bool, error)
+	}{
+		{"ReplaceOne", ReplaceOne},
+		{"ReplaceAll", ReplaceAll},
+	}
+
+	for _, tf := range funcs {
+		t.Run(tf.name, func(t *testing.T) {
+			s, changed, err := tf.f("", open, close, identity)
+			assert.Equal(t, "", s)
+			assert.False(t, changed)
+			assert.Nil(t, err)
+		})
+	}
+}
+
+func TestNilFunc(t *testing.T) {
+	const (
+		test  = "foo"
+		open  = "(_"
+		close = "_)"
+	)
+
+	funcs := []struct {
+		name string
+		f    func(s string, open, close string, f func(string) (string, error)) (string, bool, error)
+	}{
+		{"ReplaceOne", ReplaceOne},
+		{"ReplaceAll", ReplaceAll},
+	}
+
+	for _, tf := range funcs {
+		t.Run(tf.name, func(t *testing.T) {
+			s, changed, err := tf.f(test, open, close, nil)
+			assert.Equal(t, test, s)
+			assert.False(t, changed)
+			assert.Equal(t, ErrNilFunc, err)
+		})
+	}
 }

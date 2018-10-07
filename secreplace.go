@@ -11,8 +11,18 @@ import (
 var (
 	// ErrNoMatchingOpen is returned when there is no matching open for a close.
 	ErrNoMatchingOpen = errors.New("secreplace: no matching open")
+
 	// ErrNoMatchingClose is returned when there is no matching close for an open.
 	ErrNoMatchingClose = errors.New("secreplace: no matching close")
+
+	// ErrEmptyOpen is returned when the open terminator is empty.
+	ErrEmptyOpen = errors.New("secreplace: empty open")
+
+	// ErrEmptyClose is returned when the close terminator is empty.
+	ErrEmptyClose = errors.New("secreplace: empty close")
+
+	// ErrNilFunc is returned when the given replacer function is nil.
+	ErrNilFunc = errors.New("secreplace: nil func")
 )
 
 // Find searches for the first, most interior section of input text surrounded
@@ -20,6 +30,18 @@ var (
 // the form [start, end) including the open/close strings, a boolean that is
 // true when a match is found, and an error.
 func Find(s string, open, close string) (start, end int, ok bool, err error) {
+	if open == "" {
+		return -1, -1, false, ErrEmptyOpen
+	}
+
+	if close == "" {
+		return -1, -1, false, ErrEmptyClose
+	}
+
+	if s == "" {
+		return -1, -1, false, nil
+	}
+
 	closeIdx := strings.Index(s, close)
 	if closeIdx == -1 {
 		openIdx := strings.Index(s, open)
@@ -47,6 +69,22 @@ func Find(s string, open, close string) (start, end int, ok bool, err error) {
 // whole section replaced. Errors produced by Find and f are propogated.
 // On an error, ReplaceOne will return the original string.
 func ReplaceOne(s string, open, close string, f func(string) (string, error)) (out string, changed bool, err error) {
+	if open == "" {
+		return s, false, ErrEmptyOpen
+	}
+
+	if close == "" {
+		return s, false, ErrEmptyClose
+	}
+
+	if f == nil {
+		return s, false, ErrNilFunc
+	}
+
+	if s == "" {
+		return "", false, nil
+	}
+
 	start, end, ok, err := Find(s, open, close)
 	if err != nil {
 		return s, false, err
@@ -71,6 +109,22 @@ func ReplaceOne(s string, open, close string, f func(string) (string, error)) (o
 // made, or an error occurs. On an error, ReplaceAll will return the partially
 // replaced string and properly set changed to be true or false.
 func ReplaceAll(s string, open, close string, f func(string) (string, error)) (out string, changed bool, err error) {
+	if open == "" {
+		return s, false, ErrEmptyOpen
+	}
+
+	if close == "" {
+		return s, false, ErrEmptyClose
+	}
+
+	if f == nil {
+		return s, false, ErrNilFunc
+	}
+
+	if s == "" {
+		return "", false, nil
+	}
+
 	for {
 		replaced, c, err := ReplaceOne(s, open, close, f)
 		if err != nil {
