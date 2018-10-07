@@ -243,3 +243,26 @@ func TestReplaceFuncErr(t *testing.T) {
 		})
 	}
 }
+
+func TestReplacePartialErr(t *testing.T) {
+	const (
+		open    = "(_"
+		close   = "_)"
+		test    = open + "foo " + open + "bar" + close + close
+		partial = open + "foo bar" + close
+	)
+
+	errTest := errors.New("test error")
+
+	f := func(s string) (string, error) {
+		if s == "bar" {
+			return s, nil
+		}
+		return "", errTest
+	}
+
+	s, changed, err := ReplaceAll(test, open, close, f)
+	assert.Equal(t, partial, s)
+	assert.True(t, changed)
+	assert.Equal(t, errTest, err)
+}

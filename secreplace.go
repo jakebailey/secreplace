@@ -69,12 +69,12 @@ func ReplaceOne(s string, open, close string, f func(string) (string, error)) (o
 
 // ReplaceAll calls ReplaceOne repeatedly until no more replacements can be
 // made, or an error occurs. On an error, ReplaceAll will return the partially
-// replaced string.
+// replaced string and properly set changed to be true or false.
 func ReplaceAll(s string, open, close string, f func(string) (string, error)) (out string, changed bool, err error) {
 	for {
 		replaced, c, err := ReplaceOne(s, open, close, f)
 		if err != nil {
-			return replaced, false, err
+			return s, changed, err
 		}
 		if !c {
 			break
