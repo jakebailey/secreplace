@@ -1,3 +1,6 @@
+// Package secreplace aids in replacing sections of text which are surrounded
+// by known beginning and end terminators. Sections can be nested, and
+// secreplace can replace all until no changes can be made.
 package secreplace
 
 import (
@@ -7,9 +10,9 @@ import (
 
 var (
 	// ErrNoMatchingOpen is returned when there is no matching open for a close.
-	ErrNoMatchingOpen = errors.New("replact: no matching open")
+	ErrNoMatchingOpen = errors.New("secreplace: no matching open")
 	// ErrNoMatchingClose is returned when there is no matching close for an open.
-	ErrNoMatchingClose = errors.New("replact: no matching close")
+	ErrNoMatchingClose = errors.New("secreplace: no matching close")
 )
 
 // Find searches for the first, most interior section of input text surrounded
