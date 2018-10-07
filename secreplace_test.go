@@ -108,11 +108,13 @@ func TestReplaceOne(t *testing.T) {
 		},
 		{
 			s:         "(_foo",
+			expected:  "(_foo",
 			unchanged: true,
 			err:       ErrNoMatchingClose,
 		},
 		{
 			s:         "foo_)",
+			expected:  "foo_)",
 			unchanged: true,
 			err:       ErrNoMatchingOpen,
 		},
@@ -169,11 +171,13 @@ func TestReplaceAll(t *testing.T) {
 		},
 		{
 			s:         "(_foo",
+			expected:  "(_foo",
 			unchanged: true,
 			err:       ErrNoMatchingClose,
 		},
 		{
 			s:         "foo_)",
+			expected:  "foo_)",
 			unchanged: true,
 			err:       ErrNoMatchingOpen,
 		},
@@ -233,7 +237,7 @@ func TestReplaceFuncErr(t *testing.T) {
 	for _, tf := range funcs {
 		t.Run(tf.name, func(t *testing.T) {
 			s, changed, err := tf.f(test, open, close, f)
-			assert.Equal(t, "", s)
+			assert.Equal(t, test, s)
 			assert.Equal(t, false, changed)
 			assert.Equal(t, errTest, err)
 		})

@@ -45,10 +45,11 @@ func Find(s string, open, close string) (start, end int, ok bool, err error) {
 // ReplaceOne replaces a single match found by Find. It calls f on the text
 // between the open and close strings, and returns a new string with the
 // whole section replaced. Errors produced by Find and f are propogated.
+// On an error, ReplaceOne will return the original string.
 func ReplaceOne(s string, open, close string, f func(string) (string, error)) (out string, changed bool, err error) {
 	start, end, ok, err := Find(s, open, close)
 	if err != nil {
-		return "", false, err
+		return s, false, err
 	}
 	if !ok {
 		return s, false, nil
@@ -60,19 +61,20 @@ func ReplaceOne(s string, open, close string, f func(string) (string, error)) (o
 
 	replaced, err := f(middle)
 	if err != nil {
-		return "", false, err
+		return s, false, err
 	}
 
 	return prefix + replaced + suffix, true, nil
 }
 
 // ReplaceAll calls ReplaceOne repeatedly until no more replacements can be
-// made, or an error occurs.
+// made, or an error occurs. On an error, ReplaceAll will return the partially
+// replaced string.
 func ReplaceAll(s string, open, close string, f func(string) (string, error)) (out string, changed bool, err error) {
 	for {
 		replaced, c, err := ReplaceOne(s, open, close, f)
 		if err != nil {
-			return "", false, err
+			return replaced, false, err
 		}
 		if !c {
 			break
