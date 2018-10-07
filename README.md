@@ -1,5 +1,8 @@
 # secreplace
 
+[![GoDoc Reference](https://godoc.org/github.com/jakebailey/secreplace?status.svg)](http://godoc.org/github.com/jakebailey/secreplace) [![Go Report Card](https://goreportcard.com/badge/github.com/jakebailey/secreplace)](https://goreportcard.com/report/github.com/jakebailey/secreplace) [![Build Status](https://travis-ci.com/jakebailey/secreplace.svg?branch=master)](https://travis-ci.com/jakebailey/secreplace)
+
+
 `secreplace` is a library which aids in the string replacement of "sections".
 A section is defined as text enclosed by open and close terminators.
 
