@@ -9,8 +9,8 @@ import (
 
 func TestFind(t *testing.T) {
 	const (
-		open  = "_(_"
-		close = "_)_"
+		open  = "(_"
+		close = "_)"
 	)
 
 	tests := []struct {
@@ -21,47 +21,47 @@ func TestFind(t *testing.T) {
 		err   error
 	}{
 		{
-			s:     "_(_foo_)_",
+			s:     "(_foo_)",
 			start: 0,
-			end:   9,
+			end:   7,
 			ok:    true,
 		},
 		{
-			s:     "_(_bar _(_foo_)__)_",
-			start: 7,
-			end:   16,
+			s:     "(_bar (_foo_)_)",
+			start: 6,
+			end:   13,
 			ok:    true,
 		},
 		{
-			s:     "_(_foo",
+			s:     "(_foo",
 			start: -1,
 			end:   -1,
 			ok:    false,
 			err:   ErrNoMatchingClose,
 		},
 		{
-			s:     "_(__(_foo",
+			s:     "(_(_foo",
 			start: -1,
 			end:   -1,
 			ok:    false,
 			err:   ErrNoMatchingClose,
 		},
 		{
-			s:     "foo_)_",
+			s:     "foo_)",
 			start: -1,
 			end:   -1,
 			ok:    false,
 			err:   ErrNoMatchingOpen,
 		},
 		{
-			s:     "foo_)__)_",
+			s:     "foo_)_)",
 			start: -1,
 			end:   -1,
 			ok:    false,
 			err:   ErrNoMatchingOpen,
 		},
 		{
-			s:     "foo_)_ _(_bar_)_",
+			s:     "foo_) (_bar_)",
 			start: -1,
 			end:   -1,
 			ok:    false,
@@ -82,8 +82,8 @@ func TestFind(t *testing.T) {
 
 func TestReplaceOne(t *testing.T) {
 	const (
-		open  = "_(_"
-		close = "_)_"
+		open  = "(_"
+		close = "_)"
 	)
 
 	identity := func(s string) (string, error) {
@@ -98,7 +98,7 @@ func TestReplaceOne(t *testing.T) {
 		err       error
 	}{
 		{
-			s:        "_(_foo_)_",
+			s:        "(_foo_)",
 			expected: "foo",
 		},
 		{
@@ -107,22 +107,22 @@ func TestReplaceOne(t *testing.T) {
 			unchanged: true,
 		},
 		{
-			s:         "_(_foo",
+			s:         "(_foo",
 			unchanged: true,
 			err:       ErrNoMatchingClose,
 		},
 		{
-			s:         "foo_)_",
+			s:         "foo_)",
 			unchanged: true,
 			err:       ErrNoMatchingOpen,
 		},
 		{
-			s:        "_(_foo _(_bar_)__)_",
-			expected: "_(_foo bar_)_",
+			s:        "(_foo (_bar_)_)",
+			expected: "(_foo bar_)",
 		},
 		{
-			s:        "_(_foo _(_bar_)_ _(_baz_)__)_",
-			expected: "_(_foo bar _(_baz_)__)_",
+			s:        "(_foo (_bar_) (_baz_)_)",
+			expected: "(_foo bar (_baz_)_)",
 		},
 	}
 
@@ -143,8 +143,8 @@ func TestReplaceOne(t *testing.T) {
 
 func TestReplaceAll(t *testing.T) {
 	const (
-		open  = "_(_"
-		close = "_)_"
+		open  = "(_"
+		close = "_)"
 	)
 
 	identity := func(s string) (string, error) {
@@ -159,7 +159,7 @@ func TestReplaceAll(t *testing.T) {
 		err       error
 	}{
 		{
-			s:        "_(_foo_)_",
+			s:        "(_foo_)",
 			expected: "foo",
 		},
 		{
@@ -168,25 +168,25 @@ func TestReplaceAll(t *testing.T) {
 			unchanged: true,
 		},
 		{
-			s:         "_(_foo",
+			s:         "(_foo",
 			unchanged: true,
 			err:       ErrNoMatchingClose,
 		},
 		{
-			s:         "foo_)_",
+			s:         "foo_)",
 			unchanged: true,
 			err:       ErrNoMatchingOpen,
 		},
 		{
-			s:        "_(_foo _(_bar_)__)_",
+			s:        "(_foo (_bar_)_)",
 			expected: "foo bar",
 		},
 		{
-			s:        "_(_foo _(_bar_)_ _(_baz_)__)_",
+			s:        "(_foo (_bar_) (_baz_)_)",
 			expected: "foo bar baz",
 		},
 		{
-			s: "Hi, my name is _(__(_A_)_-_(_B_)__)_!",
+			s: "Hi, my name is (_(_A_)-(_B_)_)!",
 			f: func(s string) (string, error) {
 				return "COOL-" + s, nil
 			},
@@ -211,8 +211,8 @@ func TestReplaceAll(t *testing.T) {
 
 func TestReplaceFuncErr(t *testing.T) {
 	const (
-		open  = "_(_"
-		close = "_)_"
+		open  = "(_"
+		close = "_)"
 		test  = open + "foo" + close
 	)
 

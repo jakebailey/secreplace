@@ -9,11 +9,11 @@ A section is defined as text enclosed by open and close terminators.
 For example, take the following string:
 
 ```
-Hi, my name is _(_NAME_)_!
+Hi, my name is (_NAME_)!
 ```
 
-`_(_` and `_)_` are the open and close terminators, respectively. We'd like
-to replace `_(_NAME_)_` with something else. Let's pick a function and run
+`(_` and `_)` are the open and close terminators, respectively. We'd like
+to replace `(_NAME_)` with something else. Let's pick a function and run
 `ReplaceOne`:
 
 ```go
@@ -21,7 +21,7 @@ identity := func(s string) (string, error) {
     return "COOL-"+s, nil
 }
 
-out, changed, err := ReplaceOne("Hi, my name is _(_NAME_)_!", "_(_", "_)_", identity)
+out, changed, err := ReplaceOne("Hi, my name is (_NAME_)!", "(_", "_)", identity)
 // out     == "Hi, my name is COOL-NAME!"
 // changed == true
 // err     == nil
@@ -36,7 +36,7 @@ identity := func(s string) (string, error) {
     return "COOL"+s, nil
 }
 
-out, changed, err := ReplaceAll("Hi, my name is _(__(_A_)_-_(_B_)__)_!", "_(_", "_)_", identity)
+out, changed, err := ReplaceAll("Hi, my name is (_(_A_)-(_B_)_)!", "(_", "_)", identity)
 // out     == "Hi, my name is COOL-COOL-A-COOL-B!"
 // changed == true
 // err     == nil
