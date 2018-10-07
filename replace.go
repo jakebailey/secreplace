@@ -6,7 +6,9 @@ import (
 )
 
 var (
-	ErrNoMatchingOpen  = errors.New("replact: no matching open")
+	// ErrNoMatchingOpen is returned when there is no matching open for a close.
+	ErrNoMatchingOpen = errors.New("replact: no matching open")
+	// ErrNoMatchingClose is returned when there is no matching close for an open.
 	ErrNoMatchingClose = errors.New("replact: no matching close")
 )
 
