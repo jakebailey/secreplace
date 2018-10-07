@@ -1,6 +1,6 @@
 # secreplace
 
-[![GoDoc Reference](https://godoc.org/github.com/jakebailey/secreplace?status.svg)](http://godoc.org/github.com/jakebailey/secreplace) [![Go Report Card](https://goreportcard.com/badge/github.com/jakebailey/secreplace)](https://goreportcard.com/report/github.com/jakebailey/secreplace) [![Build Status](https://travis-ci.com/jakebailey/secreplace.svg?branch=master)](https://travis-ci.com/jakebailey/secreplace)
+[![GoDoc Reference](https://godoc.org/github.com/jakebailey/secreplace?status.svg)](http://godoc.org/github.com/jakebailey/secreplace) [![Go Report Card](https://goreportcard.com/badge/github.com/jakebailey/secreplace)](https://goreportcard.com/report/github.com/jakebailey/secreplace) [![Build Status](https://travis-ci.com/jakebailey/secreplace.svg?branch=master)](https://travis-ci.com/jakebailey/secreplace) [![Coverage Status](https://coveralls.io/repos/github/jakebailey/secreplace/badge.svg?branch=master)](https://coveralls.io/github/jakebailey/secreplace?branch=master)
 
 
 `secreplace` is a library which aids in the string replacement of "sections".
