@@ -17,11 +17,11 @@ to replace `(_NAME_)` with something else. Let's pick a function and run
 `ReplaceOne`:
 
 ```go
-identity := func(s string) (string, error) {
+replacer := func(s string) (string, error) {
     return "COOL-"+s, nil
 }
 
-out, changed, err := ReplaceOne("Hi, my name is (_NAME_)!", "(_", "_)", identity)
+out, changed, err := ReplaceOne("Hi, my name is (_NAME_)!", "(_", "_)", replacer)
 // out     == "Hi, my name is COOL-NAME!"
 // changed == true
 // err     == nil
@@ -32,11 +32,11 @@ replacements can occur. This allows for nesting, for example:
 
 
 ```go
-identity := func(s string) (string, error) {
+replacer := func(s string) (string, error) {
     return "COOL"+s, nil
 }
 
-out, changed, err := ReplaceAll("Hi, my name is (_(_A_)-(_B_)_)!", "(_", "_)", identity)
+out, changed, err := ReplaceAll("Hi, my name is (_(_A_)-(_B_)_)!", "(_", "_)", replacer)
 // out     == "Hi, my name is COOL-COOL-A-COOL-B!"
 // changed == true
 // err     == nil
